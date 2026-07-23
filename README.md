@@ -14,32 +14,31 @@
 
 ## 📋 背景
 
-Hermes Agent 的 `COMMAND_REGISTRY` 中共有 82 条命令描述。其中 68 条已由 `display.language: zh` 自动翻译为中文，但仍有 **14 条**描述为英文。本项目通过一个标准 `patch` 文件将这 14 条英文描述汉化，使全部 82 条命令描述达到全中文，重启 gateway 后 Telegram 菜单即显示完整中文。
+Hermes Agent 的 `COMMAND_REGISTRY` 中共有 82 条命令描述，源码原始版本全部为英文。本项目通过一个标准 `patch` 文件将全部 82 条描述汉化为中文。
+
+Telegram 菜单实际注册显示的命令数受 `max_commands` 配置限制（默认 60），其中 52 条为核心命令、其余为 skill/plugin命令。不在菜单中的命令仍可通过手动输入 `/命令名` 使用。
 
 ```
-Telegram Bot 输入 "/" → 弹出命令菜单 → 82 条命令全中文 ✅
+COMMAND_REGISTRY  82 条命令描述 → patch 全部汉化
+Telegram 菜单    60 条实际注册（默认） → 全中文显示 ✅
 ```
 
 ## ✨ 汉化内容
 
-`COMMAND_REGISTRY` 共 82 条命令描述，`display.language: zh` 已翻译 68 条，本补丁补齐剩余 14 条：
+`COMMAND_REGISTRY` 共 82 条命令描述已全部汉化，按分类统计：
 
-| # | 命令 | 原文 | 汉化 |
-|:-:|:----:|------|------|
-| 1 | `/prompt` | Compose your next prompt in $EDITOR (markdown), then send it | 在 $EDITOR 中编写下一条提示（markdown），然后发送 |
-| 2 | `/compress` | Compress conversation context (add 'here [N]' to keep recent N turns; --preview shows what would happen) | 压缩对话上下文（加 'here [N]' 保留最近 N 轮；--preview 预览） |
-| 3 | `/deny` | Deny a pending dangerous command (optionally with a reason) | 拒绝待处理的危险命令（可附理由） |
-| 4 | `/journey` | Open the learning journey timeline | 打开学习旅程时间线 |
-| 5 | `/moa` | Run one prompt through the default Mixture of Agents preset, then restore your model | 用默认 Mixture of Agents 预设运行一次提示，然后恢复原模型 |
-| 6 | `/model` | Switch model (session-scoped; --global to persist) | 切换模型（会话级；--global 全局持久化） |
-| 7 | `/timestamps` | Toggle [HH:MM] timestamps on messages and /history | 切换消息和 /history 上的 [HH:MM] 时间戳 |
-| 8 | `/verbose` | Cycle tool progress display: off -> new -> all -> verbose -> log | 循环切换工具进度显示：关 -> 新增 -> 全部 -> 详细 -> 日志 |
-| 9 | `/pet` | Toggle or adopt a petdex mascot (/pet, /pet list, /pet <slug>) | 切换或领养 petdex 吉祥物（/pet, /pet list, /pet <slug>） |
-| 10 | `/hatch` | Generate a new petdex pet from a description | 从描述生成一个新的 petdex 宠物 |
-| 11 | `/learn` | Learn a reusable skill from anything you describe (dirs, URLs, this chat, notes) | 从你描述的任何内容学习可复用技能（目录、URL、本对话、笔记） |
-| 12 | `/usage` | Show token usage and rate limits; \`reset\` redeems a banked Codex limit reset | 显示令牌用量和速率限制；\`reset\` 兑换已存储的 Codex 限制重置 |
-| 13 | `/subscription` | View your Nous plan and change it in the browser | 查看你的 Nous 套餐并在浏览器中更改 |
-| 14 | `/topup` | Show your Nous balance and manage billing on the portal | 查看你的 Nous 余额并在门户管理账单 |
+| 分类 | 总数 | Telegram 可见 | 示例 |
+|:----:|:----:|:------------:|------|
+| Session | 26 | 24 | `/new` 开始新会话 · `/stop` 终止后台进程 · `/status` 显示会话信息 |
+| Configuration | 16 | 8 | `/model` 切换模型 · `/voice` 切换语音模式 · `/yolo` 切换 YOLO 模式 |
+| Tools & Skills | 18 | 9 | `/skills` 管理技能 · `/cron` 管理定时任务 · `/learn` 学习可复用技能 |
+| Info | 14 | 11 | `/help` 显示可用命令 · `/usage` 令牌用量 · `/debug` 上传调试报告 |
+| Exit | 1 | 0 | `/quit` 退出 CLI（仅 CLI） |
+| **合计** | **82** | **52** | |
+
+> CLI-only 命令（30 条）不出现在 Telegram 菜单中，但汉化同样生效于 CLI 的 `/help` 输出和自动补全提示。
+
+完整英文→中文对照见 [`patches/commands_zh.patch`](patches/commands_zh.patch)
 
 ## 🚀 快速使用
 
@@ -105,7 +104,7 @@ systemctl --user restart hermes-gateway
 - 本补丁仅修改命令**描述文本**，不改功能逻辑
 - Hermes Agent 升级后可能需要重新应用补丁（行号偏移可导致 `patch` 失败）
 - 补丁文件使用 `diff -u` 格式，路径相对于 Hermes 源码根目录（`-p1`）
-- `display.language: zh` 只翻译部分静态消息，命令描述的完整汉化需要本补丁
+- `display.language: zh` 只翻译少量静态消息，不翻译 `COMMAND_REGISTRY` 中的命令描述——命令描述的汉化依赖本补丁
 
 ## ✓ 验证
 
