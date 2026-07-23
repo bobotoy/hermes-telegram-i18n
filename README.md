@@ -14,15 +14,15 @@
 
 ## 📋 背景
 
-Hermes Agent 设置 `display.language: zh` 后会自动翻译大部分命令描述，但 `hermes_cli/commands.py` 中 `COMMAND_REGISTRY` 仍有 **14 条**命令描述为英文。本项目通过一个标准 `patch` 文件将这些描述汉化，重启 gateway 后 Telegram 菜单即显示全中文。
+Hermes Agent 的 `COMMAND_REGISTRY` 中共有 82 条命令描述。其中 68 条已由 `display.language: zh` 自动翻译为中文，但仍有 **14 条**描述为英文。本项目通过一个标准 `patch` 文件将这 14 条英文描述汉化，使全部 82 条命令描述达到全中文，重启 gateway 后 Telegram 菜单即显示完整中文。
 
 ```
-Telegram Bot 输入 "/" → 弹出命令菜单 → 显示中文描述 ✅
+Telegram Bot 输入 "/" → 弹出命令菜单 → 82 条命令全中文 ✅
 ```
 
 ## ✨ 汉化内容
 
-共修改 14 条命令描述：
+`COMMAND_REGISTRY` 共 82 条命令描述，`display.language: zh` 已翻译 68 条，本补丁补齐剩余 14 条：
 
 | # | 命令 | 原文 | 汉化 |
 |:-:|:----:|------|------|
